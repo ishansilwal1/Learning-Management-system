@@ -6,7 +6,7 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
         ('normal', 'Normal User'),
     ]
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='normal')
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='normal')
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
 
     def __str__(self):
