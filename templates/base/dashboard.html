@@ -1,219 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMS Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <!-- Google Fonts for better typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background: #f4f8fb;
-            font-family: 'Roboto', Arial, sans-serif;
-        }
-        .sidebar {
-            min-height: 100vh;
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            padding-top: 30px;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.03);
-        }
-        .sidebar .nav-link {
-            color: #1b4332;
-            font-weight: 500;
-            border-radius: 25px;
-            margin-bottom: 8px;
-            transition: background 0.2s, color 0.2s;
-        }
-        .sidebar .nav-link.active, .sidebar .nav-link:hover {
-            background: #b7e4c7;
-            color: #081c15;
-        }
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-        .navbar-brand {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: #081c15 !important;
-            letter-spacing: 1px;
-        }
-        .dashboard-header {
-            background: linear-gradient(90deg, #b7e4c7 60%, #d8f3dc 100%);
-            border-radius: 16px;
-            padding: 32px 24px 24px 24px;
-            margin-bottom: 32px;
-            box-shadow: 0 2px 12px rgba(56,176,0,0.07);
-        }
-        .dashboard-header h1 {
-            font-family: 'Montserrat', 'Segoe UI Semibold', Arial, sans-serif;
-            font-size: 2.7rem;
-            color: #081c15;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-        .dashboard-header p {
-            color: #2d6a4f;
-            font-size: 1.18rem;
-            font-family: 'Roboto', Arial, sans-serif;
-            font-weight: 500;
-        }
-        .card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 2px 12px rgba(56,176,0,0.07);
-            transition: box-shadow 0.2s, transform 0.2s;
-            overflow: hidden;
-            background: #fff;
-        }
-        .card:hover {
-            box-shadow: 0 6px 24px rgba(56,176,0,0.15);
-            transform: translateY(-4px) scale(1.02);
-        }
-        .card-header {
-            background: linear-gradient(90deg, #40916c 60%, #b7e4c7 100%);
-            color: #fff;
-            font-size: 1.18rem;
-            font-weight: 600;
-            border-bottom: none;
-            padding: 1.2rem 1rem 1rem 1rem;
-            position: relative;
-            font-family: 'Montserrat', Arial, sans-serif;
-        }
-        .card-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: #fff;
-            color: #40916c;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            box-shadow: 0 2px 8px rgba(56,176,0,0.10);
-        }
-        .card-body {
-            position: relative;
-            padding-top: 2.5rem;
-        }
-        .card-body p {
-            font-family: 'Roboto', Arial, sans-serif;
-            font-size: 1rem;
-        }
-        .btn-green {
-            background: #40916c;
-            color: #fff;
-            border-radius: 20px;
-            font-weight: 500;
-        }
-        .btn-green:hover {
-            background: #1b4332;
-            color: #fff;
-        }
-        .btn-outline-success {
-            border-radius: 20px;
-            font-weight: 500;
-        }
-        .classroom-title {
-            color: #40916c;
-            font-weight: 700;
-            letter-spacing: 1px;
-            font-family: 'Montserrat', Arial, sans-serif;
-            font-size: 1.5rem;
-        }
-        .profile-pic {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #b7e4c7;
-        }
-        .topbar {
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 10px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        .topbar .navbar-brand {
-            color: #081c15 !important;
-        }
-        .topbar .nav-link {
-            color: #40916c !important;
-            font-size: 1.2rem;
-        }
-        @media (max-width: 991px) {
-            .sidebar {
-                min-height: auto;
-                border-right: none;
-                border-bottom: 1px solid #e0e0e0;
-                padding-top: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="topbar">
-        <div class="container-fluid d-flex align-items-center justify-content-between">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                LMS
-            </a>
-            <div class="d-flex align-items-center">
-                <img src="https://ui-avatars.com/api/?name={{ request.user.first_name }}+{{ request.user.last_name }}&background=b7e4c7&color=081c15&size=64" alt="Profile" class="profile-pic ms-2">
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid">
-        <div class="row flex-nowrap">
-            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 sidebar">
-                <ul class="nav flex-column mt-4">
-                    <li class="nav-item"><a class="nav-link active" href="#"><i class="bi bi-house-door"></i>Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-calendar"></i>Calendar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-mortarboard"></i>Enrolled</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-list-check"></i>To-do</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-archive"></i>Archived classes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-gear"></i>Settings</a></li>
-                    <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
-                </ul>
-            </div>
-            <div class="col py-4">
-                <div class="dashboard-header text-center mb-4">
-                    <h1>
-                        Welcome, {{ request.user.first_name }} {{ request.user.last_name }}
-                    </h1>
-                    <p class="lead">Your learning journey starts here. Manage your classes, assignments, and more.</p>
-                    <a href="#" class="btn btn-green me-2"><i class="bi bi-plus-circle"></i> Create New Class</a>
-                    <a href="#" class="btn btn-outline-success"><i class="bi bi-box-arrow-in-right"></i> Join Class</a>
+{% extends 'base/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center mb-4">
+    <h1>
+        Welcome, {{ request.user.first_name }} {{ request.user.last_name }}
+    </h1>
+    <p class="lead">Your learning journey starts here. Manage your classes, assignments, and more.</p>
+    <a href="{% url 'create_class' %}" class="btn btn-green me-2">
+        <i class="bi bi-plus-circle"></i> Create New Class
+    </a>
+    <a href="#" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#joinClassModal">
+        <i class="bi bi-box-arrow-in-right"></i> Join Class
+    </a>
+</div>
+
+<h3 class="mb-3 classroom-title">Your Classes</h3>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% if all_classes %}
+        {% for classroom in all_classes %}
+        <div class="col">
+            <div class="card h-100 position-relative">
+                <div class="card-header">
+                    {{ classroom.name }}
+                    <div class="card-avatar">{{ classroom.name|slice:":1"|upper }}</div>
                 </div>
-                <h3 class="mb-3 classroom-title">Your Classes</h3>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    {% for classroom in classrooms %}
-                    <div class="col">
-                        <div class="card h-100 position-relative">
-                            <div class="card-header">
-                                {{ classroom.name }}
-                                <div class="card-avatar">{{ classroom.name|slice:":1"|upper }}</div>
-                            </div>
-                            <div class="card-body">
-                                <p class="mb-2">Owner: {{ classroom.owner.get_full_name }}</p>
-                                <p class="mb-2">Participants: {{ classroom.participants_count }}</p>
-                                <a href="{% url 'class_detail' classroom.id %}" class="btn btn-green btn-sm">Go to Class</a>
-                            </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Owner:</strong> {{ classroom.owner.get_full_name|default:classroom.owner.username }}</p>
+                    <p class="mb-2"><strong>Subject:</strong> {{ classroom.subject }}</p>
+                    <p class="mb-2">{{ classroom.description|default:"No description." }}</p>
+                    {% if classroom.owner == request.user %}
+                        <div class="alert alert-success py-1 px-2 mb-2">
+                            <strong>Invite Code:</strong> {{ classroom.invite_code }}
                         </div>
-                    </div>
-                    {% empty %}
-                    <div class="col">
-                        <div class="alert alert-info">You are not enrolled in any classes yet.</div>
-                    </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </div>
-</body>
-</html>
+        {% endfor %}
+    {% else %}
+        <div class="col">
+            <div class="alert alert-info">You are not enrolled in any classes yet.</div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Join Class Modal -->
+<div class="modal fade" id="joinClassModal" tabindex="-1" aria-labelledby="joinClassModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" action="{% url 'dashboard' %}">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="joinClassModalLabel">Join a Class</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="inviteCode" class="form-label">Class Code</label>
+            <input type="text" class="form-control" id="inviteCode" name="invite_code" placeholder="Enter code from your teacher" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="join_class" value="1" class="btn btn-green">Join</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

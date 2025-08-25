@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Create Class{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center mb-4">
+    <h1>
+        Create a New Class
+    </h1>
+    <p class="lead">Fill out the form below to create a new class for your students.</p>
+</div>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header border-0 rounded-top-4" style="background: linear-gradient(90deg, #b7e4c7 60%, #d8f3dc 100%) !important;">
+                    <h5 class="fw-bold text-success mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>Create New Class
+                    </h5>
+                </div>
+                <form method="post" action="{% url 'create_class' %}">
+                    {% csrf_token %}
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label for="className" class="form-label fw-semibold">Class Name</label>
+                            <input type="text" class="form-control rounded-pill px-3 py-2" id="className" name="class_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label fw-semibold">Subject</label>
+                            <input type="text" class="form-control rounded-pill px-3 py-2" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-semibold">Description (optional)</label>
+                            <textarea class="form-control rounded-3 px-3 py-2" id="description" name="description" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0 rounded-bottom-4 pb-4 pt-2 text-end">
+                        <button type="submit" class="btn btn-green rounded-pill px-4 py-2 fw-semibold">
+                            <i class="bi bi-check-circle me-1"></i>Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

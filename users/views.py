@@ -7,6 +7,9 @@ from django.core.mail import send_mail, EmailMessage
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from classes.models import ClassRoom, ClassMembership
+
+# handles user login part 
 
 def user_login(request):
     if request.method == 'POST':
@@ -20,11 +23,28 @@ def user_login(request):
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'users/login.html')
-
-@login_required(login_url='login') 
+# create or join the class after logging in to the system
+@login_required
 def dashboard(request):
-    return render(request, 'base/dashboard.html')
+    if request.method == 'POST' and 'join_class' in request.POST:
+        invite_code = request.POST.get('invite_code')
+        try:
+            classroom = ClassRoom.objects.get(invite_code=invite_code)
+            if classroom.owner == request.user or ClassMembership.objects.filter(user=request.user, classroom=classroom).exists():
+                messages.info(request, "You are already a member of this class.")
+            else:
+                ClassMembership.objects.create(user=request.user, classroom=classroom)
+                messages.success(request, f"You have joined {classroom.name}!")
+        except ClassRoom.DoesNotExist:
+            messages.error(request, "Invalid class code.")
+        return redirect('dashboard')
+    owned_classes = ClassRoom.objects.filter(owner=request.user)
+    memberships = ClassMembership.objects.filter(user=request.user)
+    joined_classes = ClassRoom.objects.filter(id__in=memberships.values_list('classroom_id', flat=True))
+    all_classes = (owned_classes | joined_classes).distinct()
+    return render(request, 'base/dashboard.html', {'all_classes': all_classes})
 
+#handles the registration.
 def register(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -51,12 +71,7 @@ def register(request):
                 subject='Verify your email',
                 body=f'Click the link to verify your email: {verify_url}',
                 from_email='registertolms@gmail.com',
-                to=[user.email],
-                headers={
-                    'X-Priority': '1 (Highest)',
-                    'X-MSMail-Priority': 'High',
-                    'Importance': 'High'
-                }
+                to=[user.email]
             )
             email_message.send()
             messages.success(request, 'Check your email to verify your account.')
@@ -80,23 +95,4 @@ def user_logout(request):
     messages.success(request, 'You have been logged out.')
     return redirect('login')
 
-@login_required(login_url='login')
-def account_settings(request):
-    user = request.user
-    if request.method == 'POST':
-        # Handle profile image upload
-        if 'profile_image' in request.FILES:
-            user.profile_image = request.FILES['profile_image']
-        # Handle password change
-        new_password1 = request.POST.get('new_password1')
-        new_password2 = request.POST.get('new_password2')
-        if new_password1 and new_password1 == new_password2:
-            user.set_password(new_password1)
-            update_session_auth_hash(request, user)  # Keep user logged in
-            messages.success(request, "Password updated successfully.")
-        elif new_password1 or new_password2:
-            messages.error(request, "Passwords do not match.")
-        user.save()
-        messages.success(request, "Profile updated successfully.")
-        return redirect('dashboard')
-    return redirect('dashboard')
+
