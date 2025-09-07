@@ -19,7 +19,6 @@ def create_class(request):
             owner=request.user,
             invite_code=invite_code
         )
-        # Optionally, show the invite code to the owner after creation
         request.session['invite_code'] = invite_code
         return redirect('dashboard')
 
@@ -31,7 +30,6 @@ def join_class(request):
         invite_code = request.POST.get('invite_code')
         try:
             classroom = ClassRoom.objects.get(invite_code=invite_code)
-            # Prevent joining twice
             if classroom.owner == request.user or ClassMembership.objects.filter(user=request.user, classroom=classroom).exists():
                 messages.info(request, "You are already a member of this class.")
             else:
@@ -41,3 +39,8 @@ def join_class(request):
             messages.error(request, "Invalid invitation code.")
         return redirect('dashboard')
     return redirect('dashboard')
+
+@login_required
+def class_detail(request, class_id):
+    classroom = get_object_or_404(ClassRoom, id=class_id)
+    return render(request, 'classes/class_detail.html', {'classroom': classroom})

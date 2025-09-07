@@ -9,6 +9,7 @@ class ClassRoom(models.Model):
     sub_owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='sub_owned_classes')
     invite_code = models.CharField(max_length=20, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    # slug field removed
 
     def __str__(self):
         return self.name

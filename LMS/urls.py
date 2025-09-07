@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from users import urls as users_urls
 from classes import urls as classes_urls
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -25,4 +27,6 @@ urlpatterns = [
     path('users/', include(users_urls)),
     path('classes/', include(classes_urls)),
     path('', include(users_urls)),
-]
+    path('community/', include('community.urls')),
+    path('materials/', include('materials.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

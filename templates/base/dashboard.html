@@ -20,8 +20,8 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% if all_classes %}
         {% for classroom in all_classes %}
-        <div class="col">
-            <div class="card h-100 position-relative">
+    <div class="col">
+      <div class="card h-100 position-relative clickable-card" onclick="location.href='{% url 'class_detail' classroom.id %}'">
                 <div class="card-header">
                     {{ classroom.name }}
                     <div class="card-avatar">{{ classroom.name|slice:":1"|upper }}</div>
