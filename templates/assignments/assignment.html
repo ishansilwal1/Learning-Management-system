@@ -1,0 +1,93 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center mb-4">
+    <h1>Assignments</h1>
+    <p class="lead">Manage and view your assignments here.</p>
+    {% if owned_classes %}
+        <a href="{% url 'create_assignment' %}" class="btn btn-green">
+            <i class="bi bi-plus-circle"></i> Create New Assignment
+        </a>
+    {% endif %}
+</div>
+
+{% if assignments %}
+    <div class="row">
+        {% for assignment in assignments %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 text-white">{{ assignment.classroom.name }}</h6>
+                        {% if assignment.is_overdue %}
+                            <span class="badge bg-danger">Overdue</span>
+                        {% else %}
+                            <span class="badge bg-success">Active</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ assignment.title }}</h5>
+                        <p class="card-text">{{ assignment.description|truncatewords:15 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-calendar"></i> Due: {{ assignment.deadline|date:"M d, Y H:i" }}
+                            </p>
+                            {% if assignment.file %}
+                                <span class="badge bg-info">
+                                    <i class="bi bi-paperclip"></i> File
+                                </span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted small">
+                            <i class="bi bi-person"></i> By: {{ assignment.created_by.get_full_name|default:assignment.created_by.username }}
+                        </p>
+                        
+                        {% if assignment.is_owner %}
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-file-earmark-text"></i> {{ assignment.submissions.count }} submission{{ assignment.submissions.count|pluralize }}
+                                </small>
+                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-outline-primary btn-sm">
+                                    View Details
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="mt-3">
+                                {% if assignment.user_submission %}
+                                    <div class="alert alert-success py-2">
+                                        <i class="bi bi-check-circle"></i> Submitted on {{ assignment.user_submission.submitted_at|date:"M d, H:i" }}
+                                    </div>
+                                {% elif assignment.is_overdue %}
+                                    <div class="alert alert-danger py-2">
+                                        <i class="bi bi-exclamation-triangle"></i> Assignment overdue
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-warning py-2">
+                                        <i class="bi bi-clock"></i> Not submitted yet
+                                    </div>
+                                {% endif %}
+                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-primary btn-sm">
+                                    View Assignment
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-journal-text text-muted" style="font-size: 4rem;"></i>
+        <h4 class="text-muted mt-3">No assignments yet</h4>
+        <p class="text-muted">
+            {% if owned_classes %}
+                Create your first assignment to get started.
+            {% else %}
+                Join a class to see assignments.
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
+{% endblock %}   

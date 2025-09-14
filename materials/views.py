@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Material
 from classes.models import ClassRoom
 from django.contrib.auth.decorators import login_required
+from notification.models import Notification
 
 @login_required
 def upload_material(request, class_id):
@@ -9,12 +10,26 @@ def upload_material(request, class_id):
     if request.method == 'POST' and request.FILES.get('material'):
         title = request.POST.get('title', 'Material')
         file = request.FILES['material']
-        Material.objects.create(
+        material = Material.objects.create(
             classroom=classroom,
             uploaded_by=request.user,
             title=title,
             file=file
         )
+        
+        # Send notifications to all class members
+        notification_title = f"New Material: {title}"
+        notification_message = f"A new material '{title}' has been uploaded to {classroom.name}"
+        
+        Notification.create_notifications_for_class(
+            classroom=classroom,
+            sender=request.user,
+            notification_type='material',
+            title=notification_title,
+            message=notification_message,
+            content_object=material
+        )
+        
         return redirect('class_detail', class_id=class_id)
     return redirect('class_detail', class_id=class_id)
 

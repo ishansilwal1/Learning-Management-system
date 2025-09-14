@@ -1,0 +1,270 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}My Grades{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-chart-line me-2"></i>My Grades</h2>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Grade Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Grades</h5>
+                                    <h3>{{ total_grades }}</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clipboard-list fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Passed</h5>
+                                    <h3>{{ passed_grades }}</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Failed</h5>
+                                    <h3>{{ failed_grades }}</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-times-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Average</h5>
+                                    <h3>{{ average_percentage }}%</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-percentage fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pass Rate Progress -->
+            {% if total_grades > 0 %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Pass Rate</h5>
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar {% if pass_rate >= 75 %}bg-success{% elif pass_rate >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" style="width: {{ pass_rate }}%">
+                                {{ pass_rate|floatformat:1 }}%
+                            </div>
+                        </div>
+                        <small class="text-muted">{{ passed_grades }} out of {{ total_grades }} assignments passed</small>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Grade Distribution -->
+            {% if grade_distribution %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-pie me-2"></i>Grade Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for grade, count in grade_distribution.items %}
+                                <div class="col-md-2 col-sm-4 col-6 mb-3">
+                                    <div class="text-center">
+                                        <div class="badge badge-grade-{{ grade|lower }} fs-4 mb-2 p-3">{{ grade }}</div>
+                                        <div class="fw-bold">{{ count }}</div>
+                                        <small class="text-muted">{{ count }} grades</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Grades List -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-list me-2"></i>All Grades</h5>
+                </div>
+                <div class="card-body">
+                    {% if page_obj %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Assignment</th>
+                                        <th>Class</th>
+                                        <th>Grade</th>
+                                        <th>Percentage</th>
+                                        <th>Status</th>
+                                        <th>Graded By</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for grade in page_obj %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ grade.assignment.title }}</strong><br>
+                                                <small class="text-muted">Due: {{ grade.assignment.due_date|date:"M d, Y" }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">{{ grade.assignment.classroom.name }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-grade-{{ grade.grade|lower }} fs-6">
+                                                    {{ grade.grade }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <strong>{{ grade.get_percentage }}%</strong>
+                                            </td>
+                                            <td>
+                                                {% if grade.is_passed %}
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-check me-1"></i>Pass
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">
+                                                        <i class="fas fa-times me-1"></i>Fail
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <small>{{ grade.marked_by.get_full_name }}</small>
+                                            </td>
+                                            <td>
+                                                <small>{{ grade.graded_at|date:"M d, Y H:i" }}</small>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if page_obj.has_other_pages %}
+                            <nav aria-label="Grades pagination">
+                                <ul class="pagination justify-content-center">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=1">First</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                        </li>
+                                    {% endif %}
+
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                        </span>
+                                    </li>
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                            <h5>No Grades Yet</h5>
+                            <p class="text-muted">You haven't received any grades yet. Submit assignments to get graded!</p>
+                            <a href="{% url 'assignments:assignment_list' %}" class="btn btn-primary">
+                                <i class="fas fa-tasks me-1"></i>View Assignments
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.badge-grade-a\+, .badge-grade-a, .badge-grade-a- {
+    background-color: #28a745 !important;
+    color: white;
+}
+
+.badge-grade-b\+, .badge-grade-b, .badge-grade-b- {
+    background-color: #17a2b8 !important;
+    color: white;
+}
+
+.badge-grade-c\+, .badge-grade-c, .badge-grade-c- {
+    background-color: #ffc107 !important;
+    color: black;
+}
+
+.badge-grade-d\+, .badge-grade-d {
+    background-color: #fd7e14 !important;
+    color: white;
+}
+
+.badge-grade-f {
+    background-color: #dc3545 !important;
+    color: white;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.progress {
+    border-radius: 15px;
+}
+
+.progress-bar {
+    border-radius: 15px;
+    font-weight: bold;
+}
+</style>
+{% endblock %}

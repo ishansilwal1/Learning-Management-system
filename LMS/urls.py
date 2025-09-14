@@ -29,4 +29,7 @@ urlpatterns = [
     path('', include(users_urls)),
     path('community/', include('community.urls')),
     path('materials/', include('materials.urls')),
+    path('assignment/', include('assignments.urls')),
+    path('notifications/', include('notification.urls')),
+    path('grades/', include('grades.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

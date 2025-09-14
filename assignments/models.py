@@ -8,6 +8,7 @@ class Assignment(models.Model):
     description = models.TextField(blank=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     deadline = models.DateTimeField()
+    file = models.FileField(upload_to='assignments/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

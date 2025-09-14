@@ -1,0 +1,110 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center mb-4">
+    <h1>Notifications</h1>
+    <p class="lead">Stay updated with your class activities.</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Notification Actions -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">
+                            {% if unread_count > 0 %}
+                                <span class="badge bg-danger me-2">{{ unread_count }}</span>
+                                {{ unread_count }} unread notification{{ unread_count|pluralize }}
+                            {% else %}
+                                <span class="text-success">
+                                    <i class="bi bi-check-circle me-1"></i>All caught up!
+                                </span>
+                            {% endif %}
+                        </h6>
+                        {% if unread_count > 0 %}
+                            <form method="post" action="{% url 'mark_all_as_read' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-check-all me-1"></i>Mark All as Read
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications List -->
+            {% if notifications %}
+                {% for notification in notifications %}
+                    <div class="card mb-3 {% if not notification.read %}border-primary{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center mb-2">
+                                        {% if notification.notification_type == 'assignment' %}
+                                            <i class="bi bi-journal-text text-primary me-2"></i>
+                                        {% elif notification.notification_type == 'announcement' %}
+                                            <i class="bi bi-megaphone text-warning me-2"></i>
+                                        {% elif notification.notification_type == 'material' %}
+                                            <i class="bi bi-file-earmark text-info me-2"></i>
+                                        {% endif %}
+                                        <h6 class="mb-0 {% if not notification.read %}text-primary fw-bold{% endif %}">
+                                            {{ notification.title }}
+                                        </h6>
+                                        {% if not notification.read %}
+                                            <span class="badge bg-primary ms-2">New</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="mb-2 text-muted">{{ notification.message }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>{{ notification.created_at|timesince }} ago
+                                            {% if notification.classroom %}
+                                                | <i class="bi bi-house me-1"></i>{{ notification.classroom.name }}
+                                            {% endif %}
+                                            {% if notification.sender %}
+                                                | <i class="bi bi-person me-1"></i>{{ notification.sender.get_full_name|default:notification.sender.username }}
+                                            {% endif %}
+                                        </small>
+                                        <div>
+                                            {% if notification.content_object %}
+                                                {% if notification.notification_type == 'assignment' %}
+                                                    <a href="{% url 'assignment_detail' notification.content_object.id %}" class="btn btn-outline-primary btn-sm me-2">
+                                                        View Assignment
+                                                    </a>
+                                                {% elif notification.notification_type == 'announcement' or notification.notification_type == 'material' %}
+                                                    <a href="{% url 'class_detail' notification.classroom.id %}" class="btn btn-outline-primary btn-sm me-2">
+                                                        View Class
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if not notification.read %}
+                                                <form method="post" action="{% url 'mark_as_read' notification.id %}" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-outline-success btn-sm">
+                                                        <i class="bi bi-check me-1"></i>Mark as Read
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-bell text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">No notifications yet</h4>
+                    <p class="text-muted">When class owners post assignments, announcements, or materials, you'll see them here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

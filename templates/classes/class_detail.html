@@ -4,16 +4,37 @@
 
 {% block content %}
 <!-- Welcome Card -->
-<div class="card bg-success bg-opacity-25 mx-auto mb-4" style="max-width: 700px; border-radius: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+<div class="card bg-success bg-opacity-25 mb-4" style="border-radius: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
     <div class="card-body text-center">
         <h1 class="mb-2">Welcome to {{ classroom.name }}</h1>
         {% if classroom.owner == request.user %}
             <p class="lead">Here you can upload materials and announcements for your students.</p>
-            <div class="d-flex align-items-center justify-content-center mb-2">
-                <span class="badge bg-light text-success fs-5 px-3 py-2" style="letter-spacing:2px;"><strong>Invite Code:</strong> {{ classroom.invite_code }}</span>
+            <div class="d-flex align-items-center justify-content-center mb-3">
+                <span class="badge bg-light text-success fs-5 px-3 py-2 me-3" style="letter-spacing:2px;"><strong>Invite Code:</strong> {{ classroom.invite_code }}</span>
+            </div>
+            <!-- Owner Navigation Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="{% url 'assignment' %}" class="btn btn-primary">
+                    <i class="bi bi-journal-plus"></i> Create Assignment
+                </a>
+                <a href="{% url 'grades:manage_grades' classroom.id %}" class="btn btn-warning">
+                    <i class="bi bi-clipboard-check"></i> Manage Grades
+                </a>
+                <a href="{% url 'grades:class_summary' classroom.id %}" class="btn btn-info">
+                    <i class="bi bi-graph-up"></i> View Dashboard
+                </a>
             </div>
         {% else %}
             <p class="lead">Here you can access materials and announcements related to this class.</p>
+            <!-- Student Navigation Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="{% url 'assignment' %}" class="btn btn-primary">
+                    <i class="bi bi-journal-text"></i> View Assignments
+                </a>
+                <a href="{% url 'grades:student_grades' %}" class="btn btn-success">
+                    <i class="bi bi-trophy"></i> My Grades
+                </a>
+            </div>
         {% endif %}
     </div>
 </div>

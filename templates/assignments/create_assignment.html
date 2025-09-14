@@ -1,0 +1,76 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Create Assignment{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center mb-4">
+    <h1>Create New Assignment</h1>
+    <p class="lead">Create an assignment for your students.</p>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-plus-circle me-2"></i>Assignment Details
+                    </h5>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="classroom" class="form-label">Class</label>
+                            <select name="classroom" id="classroom" class="form-control" required>
+                                <option value="">Select a class</option>
+                                {% for classroom in owned_classes %}
+                                    <option value="{{ classroom.id }}">{{ classroom.name }} ({{ classroom.subject }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Assignment Title</label>
+                            <input type="text" name="title" id="title" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea name="description" id="description" class="form-control" rows="4" placeholder="Assignment instructions and details..."></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Assignment File (Optional)</label>
+                            <input type="file" name="file" id="file" class="form-control" 
+                                   accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.zip">
+                            <div class="form-text">Upload assignment materials, instructions, or resources for students.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="deadline" class="form-label">Deadline</label>
+                            <input type="datetime-local" name="deadline" id="deadline" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0 text-end">
+                        <a href="{% url 'assignment' %}" class="btn btn-outline-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-green">
+                            <i class="bi bi-check-circle me-1"></i>Create Assignment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Set minimum date to current date/time
+document.addEventListener('DOMContentLoaded', function() {
+    const deadlineInput = document.getElementById('deadline');
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    deadlineInput.min = now.toISOString().slice(0, 16);
+});
+</script>
+{% endblock %}

@@ -313,10 +313,15 @@
                 <a class="nav-link" href="#"><i class="bi bi-calendar"></i> Calendar</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bi bi-journal-text"></i> Assignments</a>
+                <a class="nav-link {% if 'assignment' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'assignment' %}"><i class="bi bi-journal-text"></i> Assignments</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bi bi-bell"></i> Activity</a>
+                <a class="nav-link {% if 'notification' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'notification_list' %}">
+                    <i class="bi bi-bell"></i> Notifications
+                    {% if unread_notifications_count > 0 %}
+                        <span class="badge bg-danger ms-1">{{ unread_notifications_count }}</span>
+                    {% endif %}
+                </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="bi bi-box-arrow-right"></i> Logout</a>
