@@ -33,12 +33,7 @@ A comprehensive, AI-powered Learning Management System built with Django, featur
 - **Accessibility**: WCAG compliant design principles
 - **Professional Theme**: Green-based color scheme (#40916c primary)
 
-### Technical Features
-- **Timezone Support**: Automatic timezone detection and conversion
-- **Real-time Updates**: Live notification system
-- **Security**: CSRF protection, file validation, SQL injection prevention
-- **Performance**: Optimized database queries and caching
-- **Scalability**: Modular architecture for easy extension
+
 
 ## Quick Start
 
