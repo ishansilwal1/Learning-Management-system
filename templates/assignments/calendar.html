@@ -13,7 +13,7 @@
     }
     
     .calendar-header {
-        background: linear-gradient(90deg, #40916c 60%, #b7e4c7 100%);
+        background: #40916c;
         color: #fff;
         padding: 24px;
         text-align: center;
@@ -121,14 +121,14 @@
     }
     
     .event-deadline {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        background: #fef3c7;
         color: #92400e;
         border-left: 3px solid #f59e0b;
         box-shadow: 0 1px 3px rgba(245,158,11,0.2);
     }
     
     .event-submission {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        background: #d1fae5;
         color: #065f46;
         border-left: 3px solid #10b981;
         box-shadow: 0 1px 3px rgba(16,185,129,0.2);
@@ -166,12 +166,12 @@
     }
     
     .event-deadline-item {
-        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        background: #fffbeb;
         border-left-color: #f59e0b;
     }
     
     .event-submission-item {
-        background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+        background: #f0fdf4;
         border-left-color: #10b981;
     }
     
@@ -219,6 +219,39 @@
         font-size: 3rem;
         color: #d1d5db;
         margin-bottom: 1rem;
+    }
+    
+    
+    /* Modal Styles */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .modal-header {
+        background: #40916c;
+        color: white;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .modal-header .btn-close {
+        filter: invert(1);
+    }
+    
+    .modal-body {
+        padding: 2rem;
+    }
+    
+    .modal-body strong {
+        color: #40916c;
+        font-weight: 600;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        padding: 1rem 2rem;
     }
     
     /* Responsive Design */
@@ -301,8 +334,15 @@
                                     {% for event in events_list %}
                                         {% if event.date|date:"j" == day|stringformat:"d" %}
                                             <div class="calendar-event event-{{ event.type }}" 
-                                                 title="{{ event.description }}"
-                                                 onclick="window.location.href='{{ event.url }}'">
+                                                 data-bs-toggle="modal" 
+                                                 data-bs-target="#eventModal"
+                                                 data-title="{{ event.title }}"
+                                                 data-date="{{ event.date|date:"F j, Y" }}"
+                                                 data-class="{{ event.class }}"
+                                                 data-type="{{ event.type }}"
+                                                 data-url="{{ event.url }}"
+                                                 data-description="{{ event.description }}"
+                                                 style="cursor: pointer;">
                                                 {{ event.title|truncatechars:15 }}
                                             </div>
                                         {% endif %}
@@ -348,14 +388,52 @@
                         <i class="bi bi-info-circle"></i> Legend
                     </h6>
                     <div class="legend-item">
-                        <div class="legend-color event-deadline"></div>
+                        <div class="legend-color" style="background: #fef3c7; border-left: 3px solid #f59e0b;"></div>
                         <span>Assignment Deadlines</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color event-submission"></div>
+                        <div class="legend-color" style="background: #d1fae5; border-left: 3px solid #10b981;"></div>
                         <span>Your Submissions</span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Event Details Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>Title:</strong>
+                    <p id="modalTitle" class="mb-2"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Date:</strong>
+                    <p id="modalDate" class="mb-2"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Class:</strong>
+                    <p id="modalClass" class="mb-2"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Type:</strong>
+                    <p id="modalType" class="mb-2"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Description:</strong>
+                    <p id="modalDescription" class="mb-2"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" id="modalViewLink" class="btn btn-primary">View Assignment</a>
             </div>
         </div>
     </div>
@@ -373,9 +451,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add tooltips for better UX
-    var events = document.querySelectorAll('.calendar-event');
-    events.forEach(function(event) {
+    // Handle event modal
+    const eventModal = document.getElementById('eventModal');
+    if (eventModal) {
+        eventModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const title = button.getAttribute('data-title');
+            const date = button.getAttribute('data-date');
+            const classname = button.getAttribute('data-class');
+            const type = button.getAttribute('data-type');
+            const description = button.getAttribute('data-description');
+            const url = button.getAttribute('data-url');
+            
+            // Update modal content
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDate').textContent = date;
+            document.getElementById('modalClass').textContent = classname;
+            document.getElementById('modalType').textContent = type === 'deadline' ? 'Assignment Deadline' : 'Assignment Submission';
+            document.getElementById('modalDescription').textContent = description;
+            document.getElementById('modalViewLink').href = url;
+        });
+    }
+    
+    // Add hover effects for calendar events
+    document.querySelectorAll('.calendar-event').forEach(function(event) {
         event.addEventListener('mouseenter', function() {
             this.style.transform = 'scale(1.05)';
             this.style.transition = 'transform 0.2s';

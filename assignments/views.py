@@ -266,7 +266,7 @@ def assignment_calendar(request):
             'type': 'deadline',
             'class': assignment.classroom.name,
             'description': f'Assignment deadline for {assignment.classroom.name}',
-            'url': f'/assignments/{assignment.id}/'
+            'url': f'/assignment/{assignment.id}/'
         })
     
     # Add submission dates
@@ -277,7 +277,7 @@ def assignment_calendar(request):
             'type': 'submission',
             'class': submission.assignment.classroom.name,
             'description': f'Submitted assignment for {submission.assignment.classroom.name}',
-            'url': f'/assignments/{submission.assignment.id}/'
+            'url': f'/assignment/{submission.assignment.id}/'
         })
     
     # Create calendar data
