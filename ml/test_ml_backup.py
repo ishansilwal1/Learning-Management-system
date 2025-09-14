@@ -1,19 +1,4 @@
-"""
-Simple test scrdef test_ml_system():
-    """Test the ML system functionality"""
-    print("Testing ML System...")
-    
-    # Test model loading
-    print("\n1. Testing model loading...")
-    models = load_models()
-    if models:
-        print("Models loaded successfully!")
-        print(f"   - Risk model: {type(models['risk_model']).__name__}")
-        print(f"   - Grade model: {type(models['grade_model']).__name__}")
-    else:
-        print("Failed to load models")
-        returnML functionality.
-"""
+
 import os
 import sys
 import django
