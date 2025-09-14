@@ -1,8 +1,37 @@
-venv/
+# Python
+*.py[cod]
+__pycache__/
+*.pyc
+
+# Django
 db.sqlite3
 *.log
-*.py[cod]   
-__pycache__/
+
+# Environment
 .env
-*.__pyc
-media/
+venv/
+
+# Media uploads (actual user files)
+/media/assignments/*.txt
+/media/assignments/*.docx
+/media/assignments/*.pdf
+/media/materials/*.docx
+/media/materials/*.pptx
+/media/submissions/*.txt
+/media/submissions/*.md
+
+# ML models (existing files)
+/ml/models/*.pkl
+/ml/models/metadata.json
+/ml/data/*.csv
+
+# Archive files (existing)
+community.zip
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
