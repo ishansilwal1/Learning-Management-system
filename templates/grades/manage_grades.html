@@ -3,6 +3,10 @@
 
 {% block title %}Manage Grades - {{ classroom.name }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/grades.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="row">
@@ -274,26 +278,16 @@ function submitGrade() {
 }
 </script>
 
-<style>
-.assignment-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.assignment-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.avatar-sm {
-    width: 40px;
-    height: 40px;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.table td {
-    vertical-align: middle;
-}
-</style>
+{% block extra_js %}
+<script src="{% static 'js/grades.js' %}"></script>
+<script>
+// Set the form submit URL for the grades.js functions
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('gradeForm');
+    if (form) {
+        form.dataset.submitUrl = '{% if selected_assignment %}{% url "grades:assign_grade" classroom.id selected_assignment.id %}{% endif %}';
+    }
+});
+</script>
+{% endblock %}
 {% endblock %}

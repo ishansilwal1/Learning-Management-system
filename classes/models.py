@@ -1,20 +1,22 @@
+"""Models for classroom management."""
 from django.db import models
 from users.models import CustomUser
 
 class ClassRoom(models.Model):
+    """Classroom model for managing classes."""
     name = models.CharField(max_length=100)
-    subject = models.CharField(max_length=100, default='General')  # <-- Add default value here
+    subject = models.CharField(max_length=100, default='General')
     description = models.TextField(blank=True)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owned_classes')
     sub_owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='sub_owned_classes')
     invite_code = models.CharField(max_length=20, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    # slug field removed
 
     def __str__(self):
         return self.name
 
 class ClassMembership(models.Model):
+    """Model for classroom membership with roles."""
     ROLE_CHOICES = [
         ('owner', 'Owner'),
         ('sub_owner', 'Sub-owner'),

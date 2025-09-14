@@ -1,0 +1,390 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Assignment Calendar{% endblock %}
+
+{% block extra_css %}
+<style>
+    .calendar-container {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 12px rgba(56,176,0,0.07);
+        overflow: hidden;
+        border: none;
+    }
+    
+    .calendar-header {
+        background: linear-gradient(90deg, #40916c 60%, #b7e4c7 100%);
+        color: #fff;
+        padding: 24px;
+        text-align: center;
+    }
+    
+    .calendar-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .calendar-nav button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .calendar-nav button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+    
+    .calendar-nav h2 {
+        margin: 0;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    
+    .calendar-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .calendar-table th {
+        background: #f4f8fb;
+        padding: 16px 8px;
+        text-align: center;
+        font-weight: 600;
+        color: #40916c;
+        border-bottom: 2px solid #b7e4c7;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .calendar-table td {
+        padding: 8px;
+        text-align: center;
+        vertical-align: top;
+        height: 100px;
+        border: 1px solid #e5f3e9;
+        position: relative;
+        background: #fff;
+        transition: background 0.2s ease;
+    }
+    
+    .calendar-table td:hover {
+        background: #f9fdfb;
+    }
+    
+    .calendar-day {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #334155;
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+    
+    .calendar-day.today {
+        background: #40916c;
+        color: #fff;
+        border-radius: 50%;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(64,145,108,0.3);
+    }
+    
+    .calendar-event {
+        font-size: 10px;
+        padding: 3px 5px;
+        margin: 2px 0;
+        border-radius: 6px;
+        cursor: pointer;
+        word-wrap: break-word;
+        line-height: 1.2;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+    
+    .calendar-event:hover {
+        transform: scale(1.05);
+        z-index: 10;
+        position: relative;
+    }
+    
+    .event-deadline {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+        border-left: 3px solid #f59e0b;
+        box-shadow: 0 1px 3px rgba(245,158,11,0.2);
+    }
+    
+    .event-submission {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+        border-left: 3px solid #10b981;
+        box-shadow: 0 1px 3px rgba(16,185,129,0.2);
+    }
+    
+    .events-sidebar {
+        background: #fff;
+        border-radius: 18px;
+        padding: 24px;
+        margin-left: 20px;
+        box-shadow: 0 2px 12px rgba(56,176,0,0.07);
+        border: none;
+    }
+    
+    .events-sidebar h4 {
+        color: #40916c;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-weight: 700;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
+    
+    .event-item {
+        padding: 16px;
+        margin: 12px 0;
+        border-radius: 12px;
+        border-left: 4px solid;
+        transition: all 0.2s ease;
+        background: #fff;
+    }
+    
+    .event-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .event-deadline-item {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-left-color: #f59e0b;
+    }
+    
+    .event-submission-item {
+        background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+        border-left-color: #10b981;
+    }
+    
+    .event-item strong {
+        color: #374151;
+        font-weight: 600;
+        font-family: 'Montserrat', Arial, sans-serif;
+    }
+    
+    .event-item small {
+        color: #6b7280;
+        font-weight: 500;
+    }
+    
+    .event-item .btn {
+        border-radius: 20px;
+        font-weight: 500;
+        padding: 6px 16px;
+        font-size: 0.875rem;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 15px;
+        margin-right: 12px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .no-events {
+        text-align: center;
+        color: #6b7280;
+        padding: 2rem 0;
+    }
+    
+    .no-events i {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .calendar-container {
+            margin-bottom: 20px;
+        }
+        
+        .events-sidebar {
+            margin-left: 0;
+            margin-top: 20px;
+        }
+        
+        .calendar-table td {
+            height: 80px;
+            padding: 4px;
+        }
+        
+        .calendar-event {
+            font-size: 9px;
+            padding: 2px 4px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="dashboard-header text-center mb-4">
+        <h1><i class="bi bi-calendar3"></i> Assignment Calendar</h1>
+        <p class="lead">Track your assignment deadlines and submissions</p>
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            <a href="{% url 'assignment' %}" class="btn btn-outline-primary">
+                <i class="bi bi-list"></i> All Assignments
+            </a>
+            <a href="{% url 'create_assignment' %}" class="btn btn-green">
+                <i class="bi bi-plus-circle"></i> Create Assignment
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Calendar -->
+        <div class="col-md-8">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button data-year="{{ prev_year }}" data-month="{{ prev_month }}" class="nav-month-btn">
+                            <i class="bi bi-chevron-left"></i> Previous
+                        </button>
+                        <h2>{{ month_name }} {{ year }}</h2>
+                        <button data-year="{{ next_year }}" data-month="{{ next_month }}" class="nav-month-btn">
+                            Next <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                            <th>Sun</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for week in calendar %}
+                        <tr>
+                            {% for day in week %}
+                            <td>
+                                {% if day %}
+                                    <div class="calendar-day {% if day == today.day and month == today.month and year == today.year %}today{% endif %}">
+                                        {{ day }}
+                                    </div>
+                                    {% for event in events_list %}
+                                        {% if event.date|date:"j" == day|stringformat:"d" %}
+                                            <div class="calendar-event event-{{ event.type }}" 
+                                                 title="{{ event.description }}"
+                                                 onclick="window.location.href='{{ event.url }}'">
+                                                {{ event.title|truncatechars:15 }}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Events Sidebar -->
+        <div class="col-md-4">
+            <div class="events-sidebar">
+                <h4><i class="bi bi-calendar-event"></i> This Month's Events</h4>
+                
+                {% if events_list %}
+                    {% for event in events_list %}
+                    <div class="event-item event-{{ event.type }}-item">
+                        <strong>{{ event.title }}</strong><br>
+                        <small class="text-muted">{{ event.date|date:"F j, Y" }}</small><br>
+                        <small><i class="bi bi-mortarboard"></i> {{ event.class }}</small><br>
+                        <a href="{{ event.url }}" class="btn btn-sm btn-green mt-2">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-events">
+                        <i class="bi bi-calendar-x"></i>
+                        <p class="mt-2">No events this month</p>
+                        <a href="{% url 'create_assignment' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-plus"></i> Create Assignment
+                        </a>
+                    </div>
+                {% endif %}
+                
+                <div class="mt-4 pt-3" style="border-top: 2px solid #f0f9f4;">
+                    <h6 style="color: #40916c; font-weight: 600; margin-bottom: 16px;">
+                        <i class="bi bi-info-circle"></i> Legend
+                    </h6>
+                    <div class="legend-item">
+                        <div class="legend-color event-deadline"></div>
+                        <span>Assignment Deadlines</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color event-submission"></div>
+                        <span>Your Submissions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add event listeners for navigation
+document.addEventListener('DOMContentLoaded', function() {
+    // Month navigation
+    document.querySelectorAll('.nav-month-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const year = this.dataset.year;
+            const month = this.dataset.month;
+            window.location.href = `?year=${year}&month=${month}`;
+        });
+    });
+    
+    // Add tooltips for better UX
+    var events = document.querySelectorAll('.calendar-event');
+    events.forEach(function(event) {
+        event.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.transition = 'transform 0.2s';
+        });
+        
+        event.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+});
+</script>
+{% endblock %}

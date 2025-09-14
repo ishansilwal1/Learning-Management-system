@@ -1,0 +1,14 @@
+{
+  "training_date": "2025-09-14T15:31:07.341500",
+  "samples": 100,
+  "risk_accuracy": 0.85,
+  "grade_r2": 0.7964200861187938,
+  "features": [
+    "avg_score",
+    "submission_rate",
+    "on_time_rate",
+    "participation",
+    "assignment_count",
+    "days_since_last"
+  ]
+}

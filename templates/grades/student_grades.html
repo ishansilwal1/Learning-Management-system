@@ -3,6 +3,10 @@
 
 {% block title %}My Grades{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/grades.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="row">
@@ -116,6 +120,81 @@
                 </div>
             {% endif %}
 
+            <!-- ML Analytics Section -->
+            {% if ml_analytics %}
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-brain me-2"></i>AI Performance Analytics</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for classroom_id, analytics in ml_analytics.items %}
+                            {% if not analytics.error %}
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <div class="card border-left-primary h-100">
+                                            <div class="card-body">
+                                                <h6 class="text-primary">Risk Assessment</h6>
+                                                <h4 class="mb-1">
+                                                    <span class="badge 
+                                                        {% if analytics.risk_analysis.risk_level == 'Low' %}bg-success
+                                                        {% elif analytics.risk_analysis.risk_level == 'Medium' %}bg-warning
+                                                        {% elif analytics.risk_analysis.risk_level == 'High' %}bg-orange
+                                                        {% else %}bg-danger{% endif %}">
+                                                        {{ analytics.risk_analysis.risk_level }} Risk
+                                                    </span>
+                                                </h4>
+                                                <small class="text-muted">Confidence: {{ analytics.risk_analysis.risk_score|floatformat:2 }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card border-left-success h-100">
+                                            <div class="card-body">
+                                                <h6 class="text-success">Grade Prediction</h6>
+                                                <h4 class="mb-1">{{ analytics.grade_analysis.predicted_grade }}</h4>
+                                                <small class="text-muted">
+                                                    Score: {{ analytics.grade_analysis.predicted_score }}% 
+                                                    ({{ analytics.grade_analysis.confidence|floatformat:2 }} confidence)
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card border-left-info h-100">
+                                            <div class="card-body">
+                                                <h6 class="text-info">Performance Trend</h6>
+                                                <h4 class="mb-1">
+                                                    <span class="badge 
+                                                        {% if analytics.performance_trend == 'Excellent' %}bg-success
+                                                        {% elif analytics.performance_trend == 'Good' %}bg-primary
+                                                        {% elif analytics.performance_trend == 'Average' %}bg-warning
+                                                        {% else %}bg-secondary{% endif %}">
+                                                        {{ analytics.performance_trend }}
+                                                    </span>
+                                                </h4>
+                                                <small class="text-muted">Current trajectory</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Recommendations -->
+                                {% if analytics.risk_analysis.recommendations %}
+                                    <div class="alert alert-info">
+                                        <h6><i class="fas fa-lightbulb me-2"></i>AI Recommendations:</h6>
+                                        <ul class="mb-0">
+                                            {% for rec in analytics.risk_analysis.recommendations %}
+                                                <li>{{ rec }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <!-- Grades List -->
             <div class="card">
                 <div class="card-header">
@@ -223,48 +302,4 @@
     </div>
 </div>
 
-<style>
-.badge-grade-a\+, .badge-grade-a, .badge-grade-a- {
-    background-color: #28a745 !important;
-    color: white;
-}
-
-.badge-grade-b\+, .badge-grade-b, .badge-grade-b- {
-    background-color: #17a2b8 !important;
-    color: white;
-}
-
-.badge-grade-c\+, .badge-grade-c, .badge-grade-c- {
-    background-color: #ffc107 !important;
-    color: black;
-}
-
-.badge-grade-d\+, .badge-grade-d {
-    background-color: #fd7e14 !important;
-    color: white;
-}
-
-.badge-grade-f {
-    background-color: #dc3545 !important;
-    color: white;
-}
-
-.card {
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.progress {
-    border-radius: 15px;
-}
-
-.progress-bar {
-    border-radius: 15px;
-    font-weight: bold;
-}
-</style>
 {% endblock %}

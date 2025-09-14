@@ -122,6 +122,29 @@ def student_grades(request):
         letter = grade.grade
         grade_distribution[letter] = grade_distribution.get(letter, 0) + 1
     
+    # ML Analytics - Get analytics for each classroom
+    ml_analytics = {}
+    try:
+        from ml.predictions import get_student_analytics
+        from classes.models import ClassMembership
+        
+        # Get all classrooms where student is enrolled
+        memberships = ClassMembership.objects.filter(user=request.user, role='participant')
+        
+        for membership in memberships:
+            try:
+                analytics = get_student_analytics(request.user, membership.classroom)
+                ml_analytics[membership.classroom.id] = analytics
+            except Exception as e:
+                print(f"ML Analytics error for {membership.classroom.name}: {e}")
+                ml_analytics[membership.classroom.id] = {
+                    'error': 'Analytics unavailable',
+                    'performance_trend': 'Unknown'
+                }
+    except Exception as e:
+        print(f"ML Analytics module error: {e}")
+        ml_analytics = {}
+    
     context = {
         'page_obj': page_obj,
         'total_grades': total_grades,
@@ -130,6 +153,7 @@ def student_grades(request):
         'pass_rate': (passed_grades / total_grades * 100) if total_grades > 0 else 0,
         'average_percentage': average_percentage,
         'grade_distribution': grade_distribution,
+        'ml_analytics': ml_analytics,
     }
     
     return render(request, 'grades/student_grades.html', context)

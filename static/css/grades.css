@@ -1,0 +1,298 @@
+/* Grades specific styles */
+
+/* Assignment Card Styles */
+.assignment-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.assignment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Avatar Styles */
+.avatar-sm {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Table Styles */
+.table td {
+    vertical-align: middle;
+}
+
+/* Grade Circle Styles for Grade Distribution */
+.grade-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+}
+
+.grade-circle:hover {
+    transform: scale(1.1);
+}
+
+.grade-letter {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.grade-count {
+    font-size: 12px;
+    color: white;
+    opacity: 0.9;
+}
+
+/* Grade-specific colors */
+.grade-aplus, .grade-a {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.grade-aminus, .grade-bplus {
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+}
+
+.grade-b, .grade-bminus {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+}
+
+.grade-cplus, .grade-c {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.grade-cminus, .grade-dplus {
+    background: linear-gradient(135deg, #f97316, #fb923c);
+}
+
+.grade-d, .grade-f {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
+/* Grade Progress Bars */
+.grade-progress {
+    height: 25px;
+    background: #f1f5f9;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.grade-progress-bar {
+    height: 100%;
+    border-radius: 15px;
+    transition: width 0.8s ease-in-out;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+/* Grade Badge Styles */
+.grade-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 40px;
+}
+
+.grade-badge.grade-a-range,
+.badge-grade-a\+, .badge-grade-a, .badge-grade-a- {
+    background: #10b981;
+    color: white;
+}
+
+.grade-badge.grade-b-range,
+.badge-grade-b\+, .badge-grade-b, .badge-grade-b- {
+    background: #06b6d4;
+    color: white;
+}
+
+.grade-badge.grade-c-range,
+.badge-grade-c\+, .badge-grade-c, .badge-grade-c- {
+    background: #f59e0b;
+    color: black;
+}
+
+.grade-badge.grade-d-range,
+.badge-grade-d\+, .badge-grade-d {
+    background: #f97316;
+    color: white;
+}
+
+.grade-badge.grade-f,
+.badge-grade-f {
+    background: #dc2626;
+    color: white;
+}
+
+/* Progress Bar Styles */
+.progress {
+    border-radius: 10px;
+    height: 20px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.8s ease-in-out;
+    font-weight: bold;
+}
+
+/* Pass/Fail Status */
+.pass-status {
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.pass-status.pass {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.pass-status.fail {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Student Grade Summary */
+.student-grade-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.student-grade-card:hover {
+    border-left-color: #40916c;
+    transform: translateX(5px);
+}
+
+.student-grade-card.excellent {
+    border-left-color: #10b981;
+}
+
+.student-grade-card.good {
+    border-left-color: #06b6d4;
+}
+
+.student-grade-card.average {
+    border-left-color: #f59e0b;
+}
+
+.student-grade-card.poor {
+    border-left-color: #dc2626;
+}
+
+/* Grade Statistics Cards */
+.grade-stat-card {
+    background: linear-gradient(135deg, rgba(64, 145, 108, 0.1), rgba(183, 228, 199, 0.1));
+    border: 1px solid rgba(64, 145, 108, 0.2);
+    transition: all 0.3s ease;
+}
+
+.grade-stat-card:hover {
+    background: linear-gradient(135deg, rgba(64, 145, 108, 0.15), rgba(183, 228, 199, 0.15));
+    border-color: rgba(64, 145, 108, 0.3);
+}
+
+/* Assignment Status Indicators */
+.assignment-status {
+    position: relative;
+    padding-left: 20px;
+}
+
+.assignment-status::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.assignment-status.graded::before {
+    background: #10b981;
+}
+
+.assignment-status.pending::before {
+    background: #f59e0b;
+}
+
+.assignment-status.missing::before {
+    background: #dc2626;
+}
+
+/* Grade History Timeline */
+.grade-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.grade-timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.grade-timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.grade-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #40916c;
+    border: 3px solid white;
+}
+
+/* Responsive Grade Tables */
+@media (max-width: 768px) {
+    .grade-table-responsive {
+        font-size: 14px;
+    }
+    
+    .grade-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .grade-letter {
+        font-size: 16px;
+    }
+    
+    .grade-count {
+        font-size: 10px;
+    }
+}

@@ -1,6 +1,11 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}Create Assignment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/assignments.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="dashboard-header text-center mb-4">
@@ -25,7 +30,10 @@
                             <select name="classroom" id="classroom" class="form-control" required>
                                 <option value="">Select a class</option>
                                 {% for classroom in owned_classes %}
-                                    <option value="{{ classroom.id }}">{{ classroom.name }} ({{ classroom.subject }})</option>
+                                    <option value="{{ classroom.id }}" 
+                                            {% if selected_classroom and classroom.id == selected_classroom.id %}selected{% endif %}>
+                                        {{ classroom.name }} ({{ classroom.subject }})
+                                    </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -64,13 +72,7 @@
     </div>
 </div>
 
-<script>
-// Set minimum date to current date/time
-document.addEventListener('DOMContentLoaded', function() {
-    const deadlineInput = document.getElementById('deadline');
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    deadlineInput.min = now.toISOString().slice(0, 16);
-});
-</script>
+{% block extra_js %}
+<script src="{% static 'js/assignments.js' %}"></script>
+{% endblock %}
 {% endblock %}

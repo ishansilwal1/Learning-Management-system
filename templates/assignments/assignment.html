@@ -1,15 +1,68 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Assignments{% endblock %}
+{% block title %}
+    {% if classroom %}
+        {{ classroom.name }} - Assignments
+    {% else %}
+        All Assignments
+    {% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.card {
+    height: 100%;
+}
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+.mt-auto {
+    margin-top: auto;
+}
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="dashboard-header text-center mb-4">
-    <h1>Assignments</h1>
-    <p class="lead">Manage and view your assignments here.</p>
-    {% if owned_classes %}
-        <a href="{% url 'create_assignment' %}" class="btn btn-green">
-            <i class="bi bi-plus-circle"></i> Create New Assignment
-        </a>
+    {% if classroom %}
+        <h1>{{ classroom.name }} - Assignments</h1>
+        <p class="lead">Manage assignments for this class.</p>
+        {% if classroom.owner == request.user %}
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="{% url 'create_assignment' %}?class_id={{ classroom.id }}" class="btn btn-green">
+                    <i class="bi bi-plus-circle"></i> Create New Assignment
+                </a>
+                <a href="{% url 'assignment' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-list"></i> View All Assignments
+                </a>
+                <a href="{% url 'assignment_calendar' %}" class="btn btn-outline-info">
+                    <i class="bi bi-calendar3"></i> Calendar View
+                </a>
+            </div>
+        {% else %}
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="{% url 'assignment' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-list"></i> View All My Assignments
+                </a>
+                <a href="{% url 'assignment_calendar' %}" class="btn btn-outline-info">
+                    <i class="bi bi-calendar3"></i> Calendar View
+                </a>
+            </div>
+        {% endif %}
+    {% else %}
+        <h1>All Assignments</h1>
+        <p class="lead">View all assignments from your classes.</p>
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            {% if owned_classes %}
+                <a href="{% url 'create_assignment' %}" class="btn btn-green">
+                    <i class="bi bi-plus-circle"></i> Create New Assignment
+                </a>
+            {% endif %}
+            <a href="{% url 'assignment_calendar' %}" class="btn btn-outline-info">
+                <i class="bi bi-calendar3"></i> Calendar View
+            </a>
+        </div>
     {% endif %}
 </div>
 
@@ -44,7 +97,7 @@
                         </p>
                         
                         {% if assignment.is_owner %}
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
                                 <small class="text-muted">
                                     <i class="bi bi-file-earmark-text"></i> {{ assignment.submissions.count }} submission{{ assignment.submissions.count|pluralize }}
                                 </small>
@@ -53,21 +106,21 @@
                                 </a>
                             </div>
                         {% else %}
-                            <div class="mt-3">
+                            <div class="mt-auto">
                                 {% if assignment.user_submission %}
-                                    <div class="alert alert-success py-2">
-                                        <i class="bi bi-check-circle"></i> Submitted on {{ assignment.user_submission.submitted_at|date:"M d, H:i" }}
+                                    <div class="alert alert-success alert-permanent py-2 mb-2">
+                                        <i class="bi bi-check-circle"></i> Submitted on {{ assignment.user_submission.submitted_at|date:"M d, Y H:i" }}
                                     </div>
                                 {% elif assignment.is_overdue %}
-                                    <div class="alert alert-danger py-2">
+                                    <div class="alert alert-danger alert-permanent py-2 mb-2">
                                         <i class="bi bi-exclamation-triangle"></i> Assignment overdue
                                     </div>
                                 {% else %}
-                                    <div class="alert alert-warning py-2">
+                                    <div class="alert alert-warning alert-permanent py-2 mb-2">
                                         <i class="bi bi-clock"></i> Not submitted yet
                                     </div>
                                 {% endif %}
-                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-primary btn-sm">
+                                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-primary btn-sm w-100">
                                     View Assignment
                                 </a>
                             </div>
