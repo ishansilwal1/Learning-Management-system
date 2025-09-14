@@ -491,27 +491,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 If you have any questions or need help:
-- Email: support@lms-project.com
+- Email: silwalishan111@gmail.com
 - Issues: [GitHub Issues](https://github.com/your-username/LMS/issues)
-
-## Roadmap
-
-### Version 2.0 (Upcoming)
-- Mobile application
-- Video conferencing integration
-- Advanced ML models (Deep Learning)
-- Multi-language support
-- Plugin system for extensions
-
-### Version 1.5 (Next Release)
-- Calendar integration
-- Advanced reporting system
-- Bulk operations for teachers
-- Student portfolio system
-- Enhanced notification system
-
----
-
-**Built by the LMS Development Team**
-
-*Making education accessible and intelligent through technology.*
