@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: lms-web
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn LMS.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: WEB_CONCURRENCY
+        value: "4"
+      - key: PYTHONPATH
+        value: "."
+  - type: postgres
+    name: lms-postgres
+    databaseName: lms_db
+    user: lms_user
